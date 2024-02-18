@@ -1,1 +1,4 @@
-<p>draggable-circle works!</p>
+
+<div cdkDrag class="circle" (cdkDragEnded)="dragEnded($event)" (cdkDragMoved)="dragMoved($event)">
+  <p>Drag the circle <br>ID: {{componentId}} <br> {{position}}</p>
+</div>
