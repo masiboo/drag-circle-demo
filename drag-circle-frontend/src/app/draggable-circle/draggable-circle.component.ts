@@ -20,9 +20,16 @@ export class DraggableCircleComponent {
     }
   }
 
+
   dragEnded(event: CdkDragEnd) {
-    console.log("move end and call api here ");
-    console.log(this.circleInfo);
+    // call the api when drag ends
+    let returnVal = this.apiService.insertCirclePosition(this.circleInfo);
+    returnVal.subscribe({
+      next: value => console.log("Emitted value "+JSON.stringify(value)),
+      complete: () => console.log('Observable completed'),
+      error: err => console.error(err)
+    })
+
   }
 
   dragMoved(event: CdkDragMove) {
