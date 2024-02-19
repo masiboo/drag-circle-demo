@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  circle-info:
+    build: ./drag-circle-backend
+    ports:
+      - "8080:8080"
+  frontend:
+    build: ./drag-circle-frontend
+    restart: always
+    ports:
+      - 4200:4200
+    depends_on:
+      - circle-info
+
