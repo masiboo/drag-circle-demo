@@ -1,19 +1,22 @@
 package com.test.dgragcircle.model;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
+import java.time.Instant;
+import java.util.UUID;
 
 @Data
 @Entity
-@Table(name="circle-info")
+@Table(name = "circle_info")
 public class CircleInfo {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     private int componentId;
 
@@ -22,8 +25,8 @@ public class CircleInfo {
     private int coordinateY;
 
     @CreationTimestamp
-    private Date createdAt;
+    private Instant createdAt;
 
-    @CreationTimestamp
-    private Date updatedAt;
+    @UpdateTimestamp
+    private Instant updatedAt;
 }
