@@ -6,37 +6,59 @@ import { CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-draggable-circle',
   templateUrl: './draggable-circle.component.html',
-  styleUrl: './draggable-circle.component.css'
+  styleUrls: ['./draggable-circle.component.css']
 })
 export class DraggableCircleComponent {
-  public circleInfo: CircleInfo = new CircleInfo;
+  public circleInfo: CircleInfo = new CircleInfo();
   public position = '';
-  public componentId: number = 0;
 
   constructor(private apiService: ApiService) {
-    this.componentId =  Math.floor(Math.random() * 1000);
-    if(this.componentId === 0){
-      this.componentId =100;
-    }
+    this.initStart();
   }
 
 
-  dragEnded(event: CdkDragEnd) {
-    // call the api when drag ends
-    let returnVal = this.apiService.insertCirclePosition(this.circleInfo);
-    returnVal.subscribe({
-      next: value => console.log("Emitted value "+JSON.stringify(value)),
-      complete: () => console.log('Observable completed'),
-      error: err => console.error(err)
-    })
+  initStart() {
+    this.apiService.getLastCirclePosition().subscribe({
+      next: value => {
+        console.log("Fetched last circle position: ", value);
 
+        this.circleInfo = value;
+
+        // Ensure componentId is not zero
+        if (!this.circleInfo.componentId || this.circleInfo.componentId === 0) {
+          this.circleInfo.componentId = Math.floor(Math.random() * 1000) || 100;
+        }
+
+        this.position = `Position X: ${this.circleInfo.coordinateX}, Y: ${this.circleInfo.coordinateY}`;
+      },
+      complete: () => console.log('Fetch completed'),
+      error: err => {
+        console.error('Error fetching last position:', err);
+        // fallback to default position if backend fails
+        this.circleInfo.coordinateX = 100;
+        this.circleInfo.coordinateY = 100;
+        this.circleInfo.componentId = Math.floor(Math.random() * 1000) || 100;
+      }
+    });
   }
 
   dragMoved(event: CdkDragMove) {
-    this.circleInfo.componentId = this.componentId;
+    // Only update the coordinates
     this.circleInfo.coordinateX = event.pointerPosition.x;
     this.circleInfo.coordinateY = event.pointerPosition.y;
-    this.position = `Position X: ${event.pointerPosition.x}, Y: ${event.pointerPosition.y}`;
+    this.position = `Position X: ${this.circleInfo.coordinateX}, Y: ${this.circleInfo.coordinateY}`;
+
+    // Avoid logging the full event object (circular reference)
+    console.log("Circle moved to: ", this.circleInfo);
+  }
+
+  dragEnded(event: CdkDragEnd) {
+    this.circleInfo.componentId = Math.floor(Math.random() * 1000) || 100;
+    this.apiService.insertCirclePosition(this.circleInfo).subscribe({
+      next: value => console.log("Circle saved to backend:", value),
+      complete: () => console.log('Save completed'),
+      error: err => console.error('Error saving circle:', err)
+    });
   }
 
 }

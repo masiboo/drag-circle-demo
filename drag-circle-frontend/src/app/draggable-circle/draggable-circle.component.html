@@ -1,4 +1,28 @@
 
+<!--
 <div cdkDrag class="circle" (cdkDragEnded)="dragEnded($event)" (cdkDragMoved)="dragMoved($event)">
   <p>Drag the circle <br>ID: {{componentId}} <br> {{position}}</p>
+</div>
+
+
+<div
+  class="circle"
+  cdkDrag
+  [cdkDragFreeDragPosition]="{x: circleInfo.coordinateX, y: circleInfo.coordinateY}"
+  (cdkDragMoved)="dragMoved($event)"
+  (cdkDragEnded)="dragEnded($event)">
+  <p>Drag the circle <br>ID: {{componentId}} <br> {{position}}</p>
+</div>
+-->
+<div
+  class="circle"
+  cdkDrag
+  [cdkDragFreeDragPosition]="{x: circleInfo.coordinateX, y: circleInfo.coordinateY}"
+  (cdkDragMoved)="dragMoved($event)"
+  (cdkDragEnded)="dragEnded($event)">
+  <p>
+    Drag the circle <br />
+    ID: {{ circleInfo.componentId }} <br />
+    {{ position }}
+  </p>
 </div>
